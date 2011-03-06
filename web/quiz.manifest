@@ -1,17 +1,3 @@
 CACHE MANIFEST
 
-# Manifest for Quiz webapp
-# v0.5
-
-# HTML
-index.php
-
-# Javascript
-js/quiz.js
-js/quizDB.js
-
-# CSS
-css/main.css
-
-# Images
-img/iphone.icon.png
+# 1
