@@ -1,9 +1,9 @@
 window.applicationCache.addEventListener('error', function(error) {
-	type = error.type;
-	message = '';
-	message += 'event: ' + type;
-	message += ', item: ' + error;
+	var message = '';
+	for (var name in error) {
+		message += name + ': ' + error[name] + '; '
+	}
 
 	alert('Error: ' + message);
-	console.log(error);
+	console.log(message, error);
 });
