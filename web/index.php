@@ -25,5 +25,6 @@
 	<div id="question"></div>
 	<div id="answers"></div>
 	<div id="button"></div>
+	<div id="button2"></div>
 </body>
 </html>

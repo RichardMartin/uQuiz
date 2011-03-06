@@ -14,11 +14,13 @@ function Quiz(data) {
 	this.$questionPanel = null;
 	this.$answersPanel = null;
 	this.$button = null;
+	this.$button2 = null;
 	this.$scorePanel = null;
 	this.$currentScore = null;
 	this.$maxScore = null;
 
 	this.buttonAction = null;
+	this.button2Action = null;
 }
 
 Quiz.prototype.parseData = function(data) {
@@ -41,21 +43,34 @@ Quiz.prototype.getMaxScore = function() {
 	return maxScore;
 };
 
-Quiz.prototype.init = function($questionPanel, $answersPanel, $button, $scorePanel, $currentScore, $maxScore) {
+Quiz.prototype.updateScore = function(scoreChange) {
+	this.currentScore += (scoreChange) ? scoreChange : 0;
+	this.$currentScore.text(this.currentScore);
+	this.$maxScore.text(this.maxScore);
+};
+
+Quiz.prototype.init = function($questionPanel, $answersPanel, $button, $button2, $scorePanel, $currentScore, $maxScore) {
 	// Set up the interface
 	this.$questionPanel = $questionPanel;
 	this.$answersPanel = $answersPanel;
 	this.$button = $button;
+	this.$button2 = $button2;
 	this.$scorePanel = $scorePanel;
 	this.$currentScore = $currentScore;
 	this.$maxScore = $maxScore;
 
 	this.$button.addClass('button');
+	this.$button2.addClass('button').hide();
 
 	var self = this;
 	this.$button.click(function() {
 		if (self.buttonAction) {
 			self.buttonAction();
+		}
+	});
+	this.$button2.click(function() {
+		if (self.button2Action) {
+			self.button2Action();
 		}
 	});
 };
@@ -70,8 +85,7 @@ Quiz.prototype.start = function() {
 	this.currentScore = 0;
 	this.maxScore = this.getMaxScore();
 	this.$scorePanel.hide();
-	this.$currentScore.text(this.currentScore);
-	this.$maxScore.text(this.maxScore);
+	this.updateScore();
 
 	// Randomise the quiz
 	if (this.randomiseQuestions) {
@@ -102,8 +116,24 @@ Quiz.prototype.nextQuestion = function() {
 	var question = this.questions[this.currentQuestionIndex];
 	this.$questionPanel.text(question.text);
 
-	this.$answersPanel.empty();
 	var answers = question.getAnswers();
+	var self = this;
+	if (answers.length > 1) {
+		// Question is multiple choice
+		this.$button.text('Accept answer');
+		this.buttonAction = function() {
+			self.acceptAnswer();
+		};
+	} else {
+		// Question is free-form rather than multiple choice
+		this.$answersPanel.hide();
+		this.$button.text('Check answer');
+		this.buttonAction = function() {
+			self.checkAnswer();
+		};
+	}
+
+	this.$answersPanel.empty();
 	for (var index in answers) {
 		var answer = answers[index];
 		var $answerPanel = $('<div/>');
@@ -112,39 +142,57 @@ Quiz.prototype.nextQuestion = function() {
 
 		answer.init(question, $answerPanel);
 	}
-
-	this.$button.text('Accept answer');
-
-	var self = this;
-	this.buttonAction = function() {
-		self.acceptAnswer();
-	}
 };
 
 Quiz.prototype.acceptAnswer = function() {
+	// Automatically check the result of a multiple choice question
 	var question = this.questions[this.currentQuestionIndex];
 	if (question.selectedAnswer == null) {
 		alert('You need to select an answer first!');
 	} else {
 		// Update the score and reveal the answer
-		this.currentScore += question.selectedAnswer.score;
-		this.$currentScore.text(this.currentScore);
+		this.updateScore(question.selectedAnswer.score);
 
 		question.revealAnswer();
+		this.finishAnswer();
+	}
+};
 
-		// User can now move on to the next question, if there is one
-		var self = this;
-		if (this.currentQuestionIndex + 1 < this.questions.length) {
-			this.$button.text('Next question');
-			this.buttonAction = function() {
-				self.nextQuestion();
-			}
-		} else {
-			this.$button.text('Finish quiz');
-			this.buttonAction = function() {
-				self.finishQuiz();
-			}
-		}
+Quiz.prototype.checkAnswer = function() {
+	// Reveal the answer to a free-form question, and let the user self-mark
+	this.$answersPanel.show();
+
+	var question = this.questions[this.currentQuestionIndex];
+	question.selectAnswer(question.answers[0]);
+
+	// Update the score
+	var self = this;
+	this.$button.text('I was correct');
+	this.buttonAction = function() {
+		self.updateScore(question.selectedAnswer.score);
+		self.finishAnswer();
+	};
+	this.$button2.text('I was wrong').show();
+	this.button2Action = function() {
+		self.finishAnswer();
+	};
+};
+
+Quiz.prototype.finishAnswer = function() {
+	this.$button2.hide();
+
+	// User can now move on to the next question, if there is one
+	var self = this;
+	if (this.currentQuestionIndex + 1 < this.questions.length) {
+		this.$button.text('Next question');
+		this.buttonAction = function() {
+			self.nextQuestion();
+		};
+	} else {
+		this.$button.text('Finish quiz');
+		this.buttonAction = function() {
+			self.finishQuiz();
+		};
 	}
 };
 
@@ -164,7 +212,7 @@ Quiz.prototype.finishQuiz = function() {
 	var self = this;
 	this.buttonAction = function() {
 		self.start();
-	}
+	};
 };
 
 /**
@@ -217,7 +265,8 @@ Question.prototype.revealAnswer = function() {
 	for (var index in this.answers) {
 		var answer = this.answers[index];
 		var isSelected = (answer == this.selectedAnswer);
-		answer.reveal(isSelected);
+		var isMultiChoice = (this.answers.length > 1);
+		answer.reveal(isSelected, isMultiChoice);
 	}
 };
 
@@ -264,7 +313,7 @@ Answer.prototype.init = function(question, $answerPanel) {
 	});
 };
 
-Answer.prototype.reveal = function(isSelected) {
+Answer.prototype.reveal = function(isSelected, isMultiChoice) {
 	this.revealed = true;
 
 	if (isSelected) {
@@ -272,8 +321,13 @@ Answer.prototype.reveal = function(isSelected) {
 		this.$answerPanel.toggleClass('correct', isCorrect);
 		this.$answerPanel.toggleClass('incorrect', !isCorrect);
 
-		var comment = (isCorrect) ? 'Correct' : 'Wrong';
-		comment += (this.comment) ? ' - ' + this.comment : '!';
+		var comment;
+		if (isMultiChoice) {
+			comment = (isCorrect) ? 'Correct' : 'Wrong';
+			comment += (this.comment) ? ' - ' + this.comment : '!';
+		} else {
+			comment = (this.comment) ? this.comment : '';
+		}
 
 		var $commentPanel = $('<div/>');
 		$commentPanel.addClass('comment');
@@ -289,7 +343,7 @@ Answer.prototype.reveal = function(isSelected) {
  */
 $(function() {
 	window.quiz = new Quiz(window.quizData);
-	quiz.init($('#question'), $('#answers'), $('#button'), $('#score'), $('#currentScore'), $('#maxScore'));
+	quiz.init($('#question'), $('#answers'), $('#button'), $('#button2'), $('#score'), $('#currentScore'), $('#maxScore'));
 	quiz.start();
 });
 

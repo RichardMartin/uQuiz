@@ -62,6 +62,16 @@ window.quizData = {
 					'comment': 'The most recent statistics put the figure at 98.3%'
 				}
 			]
+		},
+		{
+			'text': 'Explain in detail how to land a plane.',
+			'answers': [
+				{
+					'text': 'You point it in the direction of the runway, and press the \'auto-land\' button',
+					'score': 1,
+					'comment': 'And don\'t forget to put the wheels down!'
+				}
+			]
 		}
 	]
 };
