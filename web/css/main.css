@@ -6,6 +6,9 @@ body {
 }
 
 h1, h1.panel {
+	background: #cba;
+	color: #532;
+	border: 2px solid #654;
 	font-size: 110%;
 	font-weight: bold;
 	letter-spacing: 0.2em;
