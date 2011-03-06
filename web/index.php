@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" manifest="quiz.manifest">
+<html lang="en" manifestX="quiz.manifest">
 <head>
 	<meta name="description" content="Simple quiz webapp for iPhone"/>
 	<meta name="keywords" content="simple quiz webapp iPhone"/>
@@ -18,8 +18,9 @@
 	<script type="text/javascript" src="/js/quiz.js"></script>
 </head>
 <body>
-	<h1 class="panel">Quiz</h1>
-	<div id="question" class="panel"></div>
-	<div id="answers" class="panel"></div>
+	<h1 class="panel">Quiz v1.0</h1>
+	<div id="question"></div>
+	<div id="answers"></div>
+	<div id="button"></div>
 </body>
 </html>

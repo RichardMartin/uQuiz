@@ -1,21 +1,55 @@
 body {
 	font-family: Helvetica, sans-serif;
-	background: #a98      ;
+	background: #a98;
 	color: #000;
+	min-height: 400px;
 }
 
-h1 {
+h1, h1.panel {
 	font-size: 110%;
 	font-weight: bold;
 	letter-spacing: 0.2em;
+	margin: 5px 0 10px 0;
 }
 
 .panel {
 	background: #532;
 	color: #eee;
 	border-radius: 15px;
-	webkit-border-radius: 15px;
+	-webkit-border-radius: 15px;
+	-moz-border-radius: 15px;
 	margin: 5px 0;
 	padding: 10px;
 	min-height: 10px;
+	overflow: hidden;
+}
+.panel.options {
+	padding: 0;
+}
+
+.option {
+	border-bottom: 2px solid #865;
+	padding: 14px 10px;
+	cursor: pointer;
+}
+.option:last-child {
+	border-bottom: none;
+}
+.option.active {
+	background: #865;
+	background-clip: border;
+}
+
+.button {
+	background: #257;
+	color: #eee;
+	border-radius: 8px;
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+	margin: 10px 0 5px 0;
+	padding: 14px 10px;
+	min-height: 10px;
+	letter-spacing: 0.2em;
+	text-align: center;
+	cursor: pointer;
 }

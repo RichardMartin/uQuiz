@@ -166,6 +166,18 @@
         <inspection_tool class="ClassMayBeInterface" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="ClassNameDiffersFromFileName" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="ControlFlowStatementWithoutBraces" enabled="true" level="WARNING" enabled_by_default="true" />
+        <inspection_tool class="CssUnknownProperty" enabled="true" level="WARNING" enabled_by_default="true">
+          <option name="myCustomPropertiesEnabled" value="true" />
+          <option name="myIgnoreVendorSpecificProperties" value="false" />
+          <option name="myCustomPropertiesList">
+            <value>
+              <list size="2">
+                <item index="0" class="java.lang.String" itemvalue="webkit-border-radius" />
+                <item index="1" class="java.lang.String" itemvalue="moz-border-radius" />
+              </list>
+            </value>
+          </option>
+        </inspection_tool>
         <inspection_tool class="LocalCanBeFinal" enabled="true" level="WARNING" enabled_by_default="true">
           <option name="REPORT_VARIABLES" value="true" />
           <option name="REPORT_PARAMETERS" value="true" />
