@@ -4,6 +4,5 @@ window.applicationCache.addEventListener('error', function(error) {
 		message += name + ': ' + error[name] + '; '
 	}
 
-	alert('Error: ' + message);
 	console.log(message, error);
-});
+}, false);

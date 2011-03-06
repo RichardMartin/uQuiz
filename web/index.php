@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" manifest="quiz.manifest">
 <head>
-	<meta charset="UTF-8"/>
 	<meta name="description" content="Simple quiz webapp for iPhone"/>
 	<meta name="keywords" content="simple quiz webapp iPhone"/>
 
@@ -14,8 +13,9 @@
 	<link rel="apple-touch-icon" href="/img/iphone.icon.png"/>
 	<link rel="stylesheet" type="text/css" href="/css/main.css"/>
 
-	<script type="text/javascript" src="/js/quizDB.js" charset="UTF-8"></script>
-	<script type="text/javascript" src="/js/quiz.js" charset="UTF-8"></script>
+	<script type="text/javascript" src="/js/jquery-1.5.1.min.js"></script>
+	<script type="text/javascript" src="/js/quizDB.js"></script>
+	<script type="text/javascript" src="/js/quiz.js"></script>
 </head>
 <body>
 	<h1 class="panel">Quiz</h1>

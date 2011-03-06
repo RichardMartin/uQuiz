@@ -1,12 +1,13 @@
 CACHE MANIFEST
 
 # Manifest for Quiz webapp
-# v0.6
+# v0.16
 
 # HTML
 index.php
 
 # Javascript
+js/jquery-1.5.1.min.js
 js/quiz.js
 js/quizDB.js
 
