@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" manifestX="quiz.manifest">
+<html lang="en" manifest="quiz.manifest">
 <head>
 	<meta name="description" content="Simple quiz webapp for iPhone"/>
 	<meta name="keywords" content="simple quiz webapp iPhone"/>
