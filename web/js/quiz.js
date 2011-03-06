@@ -7,10 +7,14 @@ function Quiz(data) {
 	this.questions = [];
 
 	this.currentQuestionIndex = null;
+	this.currentScore = 0;
 
 	this.$questionPanel = null;
 	this.$answersPanel = null;
 	this.$button = null;
+	this.$scorePanel = null;
+	this.$currentScore = null;
+	this.$maxScore = null;
 
 	this.buttonAction = null;
 
@@ -26,11 +30,14 @@ Quiz.prototype.parseData = function(data) {
 	}
 };
 
-Quiz.prototype.init = function($questionPanel, $answersPanel, $button) {
+Quiz.prototype.init = function($questionPanel, $answersPanel, $button, $scorePanel, $currentScore, $maxScore) {
 	// Set up the interface
 	this.$questionPanel = $questionPanel;
 	this.$answersPanel = $answersPanel;
 	this.$button = $button;
+	this.$scorePanel = $scorePanel;
+	this.$currentScore = $currentScore;
+	this.$maxScore = $maxScore;
 
 	this.$button.addClass('button');
 
@@ -43,6 +50,11 @@ Quiz.prototype.init = function($questionPanel, $answersPanel, $button) {
 };
 
 Quiz.prototype.start = function() {
+	this.currentScore = 0;
+	this.$scorePanel.hide();
+	this.$currentScore.text(this.currentScore);
+	this.$maxScore.text(0);
+
 	// Randomise the quiz
 	if (this.randomiseQuestions) {
 		var randomisedQuestions = [];
@@ -58,7 +70,7 @@ Quiz.prototype.start = function() {
 	this.$button.text('Start quiz');
 
 	var self = this;
-	self.buttonAction = function() {
+	this.buttonAction = function() {
 		self.$questionPanel.addClass('panel');
 		self.$answersPanel.addClass('panel options');
 
@@ -67,6 +79,8 @@ Quiz.prototype.start = function() {
 };
 
 Quiz.prototype.nextQuestion = function() {
+	this.$scorePanel.show();
+
 	this.currentQuestionIndex = (this.currentQuestionIndex == null) ? 0 : this.currentQuestionIndex + 1;
 	var question = this.questions[this.currentQuestionIndex];
 	this.$questionPanel.text(question.text);
@@ -83,6 +97,32 @@ Quiz.prototype.nextQuestion = function() {
 	}
 
 	this.$button.text('Accept answer');
+
+	var self = this;
+	this.buttonAction = function() {
+		self.acceptAnswer();
+	}
+};
+
+Quiz.prototype.acceptAnswer = function() {
+	var question = this.questions[this.currentQuestionIndex];
+	if (question.selectedAnswer == null) {
+		alert('You need to select an answer first!');
+	} else {
+		// Update the score and reveal the answer
+		this.currentScore += question.selectedAnswer.score;
+		this.$currentScore.text(this.currentScore);
+
+		question.revealAnswer();
+
+		// User can now move on to the next question
+		this.$button.text('Next question');
+
+		var self = this;
+		this.buttonAction = function() {
+			self.nextQuestion();
+		}
+	}
 };
 
 /**
@@ -126,8 +166,16 @@ Question.prototype.selectAnswer = function(selectedAnswer) {
 	this.selectedAnswer = selectedAnswer;
 	for (var index in this.answers) {
 		var answer = this.answers[index];
-		var isSelected = (answer == selectedAnswer);
+		var isSelected = (answer == this.selectedAnswer);
 		answer.$answerPanel.toggleClass('active', isSelected);
+	}
+};
+
+Question.prototype.revealAnswer = function() {
+	for (var index in this.answers) {
+		var answer = this.answers[index];
+		var isSelected = (answer == this.selectedAnswer);
+		answer.reveal(isSelected);
 	}
 };
 
@@ -139,6 +187,8 @@ function Answer(data) {
 	this.text = '';
 	this.score = 0;
 	this.comment = '';
+
+	this.revealed = false;
 
 	this.$answerPanel = null;
 
@@ -157,8 +207,30 @@ Answer.prototype.init = function(question, $answerPanel) {
 
 	var self = this;
 	this.$answerPanel.click(function() {
-		question.selectAnswer(self);
+		if (!self.revealed) {
+			question.selectAnswer(self);
+		}
 	});
+};
+
+Answer.prototype.reveal = function(isSelected) {
+	this.revealed = true;
+
+	if (isSelected) {
+		var isCorrect = (this.score > 0);
+		this.$answerPanel.toggleClass('correct', isCorrect);
+		this.$answerPanel.toggleClass('incorrect', !isCorrect);
+
+		var comment = (isCorrect) ? 'Correct' : 'Wrong';
+		comment += (this.comment) ? ' - ' + this.comment : '!';
+
+		var $commentPanel = $('<div/>');
+		$commentPanel.addClass('comment');
+		$commentPanel.text(comment);
+		this.$answerPanel.append($commentPanel);
+	} else if (this.score > 0) {
+		this.$answerPanel.addClass('correct');
+	}
 };
 
 /**
@@ -166,7 +238,7 @@ Answer.prototype.init = function(question, $answerPanel) {
  */
 $(function() {
 	window.quiz = new Quiz(window.quizData);
-	quiz.init($('#question'), $('#answers'), $('#button'));
+	quiz.init($('#question'), $('#answers'), $('#button'), $('#score'), $('#currentScore'), $('#maxScore'));
 	quiz.start();
 });
 

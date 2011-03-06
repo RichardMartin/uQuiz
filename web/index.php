@@ -18,7 +18,10 @@
 	<script type="text/javascript" src="/js/quiz.js"></script>
 </head>
 <body>
-	<h1 class="panel">Quiz v1.0</h1>
+	<h1 class="panel">
+		Quiz v1.0
+		<span id="score">Score: <span id="currentScore">0</span> / <span id="maxScore">0</span></span>
+	</h1>
 	<div id="question"></div>
 	<div id="answers"></div>
 	<div id="button"></div>

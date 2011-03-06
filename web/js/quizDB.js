@@ -54,12 +54,12 @@ window.quizData = {
 				{
 					'text': 'True',
 					'score': 0,
-					'comment': 'Nope, the most recent statistics put the figure at 98.3%'
+					'comment': 'The most recent statistics put the figure at 98.3%'
 				},
 				{
 					'text': 'False',
-					'score': 0,
-					'comment': 'Correct, the most recent statistics put the figure at 98.3%'
+					'score': 1,
+					'comment': 'The most recent statistics put the figure at 98.3%'
 				}
 			]
 		}

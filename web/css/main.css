@@ -12,6 +12,12 @@ h1, h1.panel {
 	margin: 5px 0 10px 0;
 }
 
+h1 #score {
+	font-weight: normal;
+	letter-spacing: normal;
+	float: right;
+}
+
 .panel {
 	background: #532;
 	color: #eee;
@@ -28,16 +34,35 @@ h1, h1.panel {
 }
 
 .option {
+	background-clip: border;
 	border-bottom: 2px solid #865;
 	padding: 14px 10px;
 	cursor: pointer;
+	-webkit-tap-highlight-color: rgba(0,0,0,0);
 }
 .option:last-child {
 	border-bottom: none;
 }
 .option.active {
 	background: #865;
-	background-clip: border;
+	color: #111;
+}
+.option.correct {
+	background: #241;
+}
+.option.correct.active {
+	background: #594;
+	color: #130;
+}
+.option.incorrect.active {
+	background: #954;
+	color: #410;
+}
+
+.option .comment {
+	margin-top: 10px;
+	font-style: italic;
+	font-size: 90%;
 }
 
 .button {
