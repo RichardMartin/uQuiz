@@ -3,11 +3,13 @@
  * @param data The quiz data.
  */
 function Quiz(data) {
+	this.data = data;
 	this.timestamp = new Date();
 	this.questions = [];
 
 	this.currentQuestionIndex = null;
 	this.currentScore = 0;
+	this.maxScore = 0;
 
 	this.$questionPanel = null;
 	this.$answersPanel = null;
@@ -17,17 +19,26 @@ function Quiz(data) {
 	this.$maxScore = null;
 
 	this.buttonAction = null;
-
-	this.parseData(data);
 }
 
 Quiz.prototype.parseData = function(data) {
 	this.timestamp = new Date(parseInt(data.timestamp));
+	this.questions = [];
+
 	this.randomiseQuestions = (data.randomiseQuestions == null || data.randomiseQuestions);
 	for (var index in data.questions) {
 		var answer = new Question(data.questions[index]);
 		this.questions.push(answer);
 	}
+};
+
+Quiz.prototype.getMaxScore = function() {
+	var maxScore = 0;
+	for (var index in this.questions) {
+		var question = this.questions[index];
+		maxScore += question.getMaxScore();
+	}
+	return maxScore;
 };
 
 Quiz.prototype.init = function($questionPanel, $answersPanel, $button, $scorePanel, $currentScore, $maxScore) {
@@ -50,10 +61,17 @@ Quiz.prototype.init = function($questionPanel, $answersPanel, $button, $scorePan
 };
 
 Quiz.prototype.start = function() {
+	this.parseData(this.data);
+
+	this.$questionPanel.empty().hide();
+	this.$answersPanel.empty().hide();
+
+	this.currentQuestionIndex = null;
 	this.currentScore = 0;
+	this.maxScore = this.getMaxScore();
 	this.$scorePanel.hide();
 	this.$currentScore.text(this.currentScore);
-	this.$maxScore.text(0);
+	this.$maxScore.text(this.maxScore);
 
 	// Randomise the quiz
 	if (this.randomiseQuestions) {
@@ -71,16 +89,15 @@ Quiz.prototype.start = function() {
 
 	var self = this;
 	this.buttonAction = function() {
-		self.$questionPanel.addClass('panel');
-		self.$answersPanel.addClass('panel options');
+		self.$questionPanel.addClass('panel').show();
+		self.$answersPanel.addClass('panel options').show();
+		self.$scorePanel.show();
 
 		self.nextQuestion();
 	};
 };
 
 Quiz.prototype.nextQuestion = function() {
-	this.$scorePanel.show();
-
 	this.currentQuestionIndex = (this.currentQuestionIndex == null) ? 0 : this.currentQuestionIndex + 1;
 	var question = this.questions[this.currentQuestionIndex];
 	this.$questionPanel.text(question.text);
@@ -115,13 +132,38 @@ Quiz.prototype.acceptAnswer = function() {
 
 		question.revealAnswer();
 
-		// User can now move on to the next question
-		this.$button.text('Next question');
-
+		// User can now move on to the next question, if there is one
 		var self = this;
-		this.buttonAction = function() {
-			self.nextQuestion();
+		if (this.currentQuestionIndex + 1 < this.questions.length) {
+			this.$button.text('Next question');
+			this.buttonAction = function() {
+				self.nextQuestion();
+			}
+		} else {
+			this.$button.text('Finish quiz');
+			this.buttonAction = function() {
+				self.finishQuiz();
+			}
 		}
+	}
+};
+
+Quiz.prototype.finishQuiz = function() {
+	var resultText = 'Your final score is ' + this.currentScore;
+	if (this.currentScore < this.maxScore) {
+		resultText += ', out of a possible ' + this.maxScore;
+		resultText += ' - That\'s ' + parseInt(100 * this.currentScore / this.maxScore) + '%';
+	} else {
+		resultText += ' - Congratulations, you got all of the questions right!';
+	}
+	this.$questionPanel.text(resultText);
+	this.$answersPanel.empty().hide();
+
+	this.$button.text('All done!');
+
+	var self = this;
+	this.buttonAction = function() {
+		self.start();
 	}
 };
 
@@ -177,6 +219,15 @@ Question.prototype.revealAnswer = function() {
 		var isSelected = (answer == this.selectedAnswer);
 		answer.reveal(isSelected);
 	}
+};
+
+Question.prototype.getMaxScore = function() {
+	var maxScore = null;
+	for (var index in this.answers) {
+		var answer = this.answers[index];
+		maxScore = (maxScore == null || maxScore < answer.score) ? answer.score : maxScore;
+	}
+	return maxScore;
 };
 
 /**

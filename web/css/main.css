@@ -26,7 +26,6 @@ h1 #score {
 	-moz-border-radius: 15px;
 	margin: 5px 0;
 	padding: 10px;
-	min-height: 10px;
 	overflow: hidden;
 }
 .panel.options {
@@ -55,7 +54,7 @@ h1 #score {
 	color: #130;
 }
 .option.incorrect.active {
-	background: #954;
+	background: #a54;
 	color: #410;
 }
 
