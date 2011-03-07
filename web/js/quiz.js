@@ -169,11 +169,13 @@ Quiz.prototype.checkAnswer = function() {
 	var self = this;
 	this.$button.text('I was correct');
 	this.buttonAction = function() {
+		question.answers[0].reveal(true, false, true);
 		self.updateScore(question.selectedAnswer.score);
 		self.finishAnswer();
 	};
 	this.$button2.text('I was wrong').show();
 	this.button2Action = function() {
+		question.answers[0].reveal(true, false, false);
 		self.finishAnswer();
 	};
 };
@@ -313,11 +315,11 @@ Answer.prototype.init = function(question, $answerPanel) {
 	});
 };
 
-Answer.prototype.reveal = function(isSelected, isMultiChoice) {
+Answer.prototype.reveal = function(isSelected, isMultiChoice, isCorrect) {
 	this.revealed = true;
 
 	if (isSelected) {
-		var isCorrect = (this.score > 0);
+		isCorrect = (isCorrect == null) ? (this.score > 0) : isCorrect;
 		this.$answerPanel.toggleClass('correct', isCorrect);
 		this.$answerPanel.toggleClass('incorrect', !isCorrect);
 
@@ -332,6 +334,9 @@ Answer.prototype.reveal = function(isSelected, isMultiChoice) {
 		var $commentPanel = $('<div/>');
 		$commentPanel.addClass('comment');
 		$commentPanel.text(comment);
+
+		this.$answerPanel.empty();
+		this.$answerPanel.text(this.text);
 		this.$answerPanel.append($commentPanel);
 	} else if (this.score > 0) {
 		this.$answerPanel.addClass('correct');
