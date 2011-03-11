@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <?php require('php/setup.php'); ?>
-<html lang="en" manifest="quiz.<?=$quizName?>.manifest">
+<html lang="en" manifest="/quiz.<?=$quizName?>.manifest">
 <head>
 	<meta name="description" content="Simple quiz webapp for iPhone"/>
 	<meta name="keywords" content="simple quiz webapp iPhone"/>
@@ -27,5 +27,6 @@
 	<div id="answers"></div>
 	<div id="button"></div>
 	<div id="button2"></div>
+	<div class="footer">Quiz updated on <?=date('Y-m-d H:i:s', $quizTimestamp)?></div>
 </body>
 </html>
