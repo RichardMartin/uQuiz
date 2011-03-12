@@ -8,9 +8,11 @@ $quizTitle = ($quizTitle) ? $quizTitle : 'Rob';
 $quizName = strToLower($quizTitle);
 
 $quizDataFilePath = $root.'/data/'.$quizName.'.quiz.txt';
+$cssFilePath = $root.'/css/main.css';
+$jsFilePath = $root.'/js/quiz.js';
 
 if (file_exists($quizDataFilePath)) {
-	$quizTimestamp = filemtime($quizDataFilePath);
+	$quizTimestamp = max(filemtime($quizDataFilePath), filemtime($cssFilePath), filemtime($jsFilePath));
 } else {
 	exit();
 }

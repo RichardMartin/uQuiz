@@ -53,25 +53,39 @@ Quiz.prototype.init = function($questionPanel, $answersPanel, $button, $button2,
 	// Set up the interface
 	this.$questionPanel = $questionPanel;
 	this.$answersPanel = $answersPanel;
-	this.$button = $button;
-	this.$button2 = $button2;
 	this.$scorePanel = $scorePanel;
 	this.$currentScore = $currentScore;
 	this.$maxScore = $maxScore;
 
+	this.$button = $('<div/>');
 	this.$button.addClass('button');
-	this.$button2.addClass('button').hide();
+	$button.append(this.$button);
+	$button.addClass('buttonContainer');
+
+	this.$button2 = $('<div/>');
+	this.$button2.addClass('button');
+	$button2.addClass('buttonContainer').hide();
+	$button2.append(this.$button2);
 
 	var self = this;
 	this.$button.click(function() {
+		$(this).removeClass('pressed');
 		if (self.buttonAction) {
 			self.buttonAction();
 		}
 	});
 	this.$button2.click(function() {
+		$(this).removeClass('pressed');
 		if (self.button2Action) {
 			self.button2Action();
 		}
+	});
+
+	$('.button').bind('touchstart', function() {
+		$(this).addClass('pressed');
+	});
+	$('.button').bind('touchend', function() {
+		$(this).removeClass('pressed');
 	});
 };
 
@@ -174,7 +188,7 @@ Quiz.prototype.checkAnswer = function() {
 		self.updateScore(question.selectedAnswer.score);
 		self.finishAnswer();
 	};
-	this.$button2.text('I was wrong').show();
+	this.$button2.text('I was wrong').parent().show();
 	this.button2Action = function() {
 		question.answers[0].reveal(true, false, false);
 		self.finishAnswer();
@@ -182,7 +196,7 @@ Quiz.prototype.checkAnswer = function() {
 };
 
 Quiz.prototype.finishAnswer = function() {
-	this.$button2.hide();
+	this.$button2.parent().hide();
 
 	// User can now move on to the next question, if there is one
 	var self = this;

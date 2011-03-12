@@ -43,6 +43,10 @@ h1 #score {
 	padding: 14px 10px;
 	cursor: pointer;
 	-webkit-tap-highlight-color: rgba(0,0,0,0);
+	-webkit-transition: all 0.1s ease-in-out;
+	-moz-transition: all 0.1s ease-in-out;
+	-o-transition: all 0.1s ease-in-out;
+	transition: all 0.1s ease-in-out;
 }
 .option:last-child {
 	border-bottom: none;
@@ -77,18 +81,39 @@ h1 #score {
 	margin-top: 2px;
 }
 
-.button {
-	background: #257;
-	color: #eee;
+.buttonContainer {
+	border: 1px solid #654;
 	border-radius: 8px;
 	-webkit-border-radius: 8px;
 	-moz-border-radius: 8px;
 	margin: 10px 10px 5px 10px;
+}
+.button {
+	background: #257;
+	color: #eee;
+	border: 2px solid #235;
+	border-top-color: #579;
+	border-left-color: #579;
+	border-radius: 8px;
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
 	padding: 14px 10px;
 	min-height: 10px;
 	letter-spacing: 0.2em;
 	text-align: center;
 	cursor: pointer;
+	-webkit-tap-highlight-color: rgba(0,0,0,0);
+	-webkit-transition: all 0.1s ease-in-out;
+	-moz-transition: all 0.1s ease-in-out;
+	-o-transition: all 0.1s ease-in-out;
+	transition: all 0.1s ease-in-out;
+}
+.button:active, button.pressed {
+	background: #579;
+	border-color: #579;
+	border-top-color: #257;
+	border-left-color: #257;
+	color: #112;
 }
 
 .footer {
