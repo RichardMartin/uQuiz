@@ -18,14 +18,18 @@
 	<script type="text/javascript" src="/js/quizDB.<?=$quizName?>.js"></script>
 </head>
 <body>
-	<h1>
-		Quiz v<?=QUIZ_VERSION?>
-		<span id="score">Score: <span id="currentScore">0</span> / <span id="maxScore">0</span></span>
-	</h1>
-	<div id="question"></div>
-	<div id="answers"></div>
-	<div id="button"></div>
-	<div id="button2"></div>
+	<div class="container">
+		<h1>
+			Quiz v<?=QUIZ_VERSION?>
+			<span id="score">Score: <span id="currentScore">0</span> / <span id="maxScore">0</span></span>
+		</h1>
+
+		<div id="question"></div>
+		<div id="answers"></div>
+
+		<div id="button"></div>
+		<div id="button2"></div>
+	</div>
 	<div class="footer">Quiz updated on <?=date('Y-m-d H:i:s', $quizTimestamp)?></div>
 </body>
 </html>
