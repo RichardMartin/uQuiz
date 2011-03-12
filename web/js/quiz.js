@@ -113,6 +113,7 @@ Quiz.prototype.start = function() {
 	}
 
 	// Start the quiz
+	$('body').addClass('start');
 	this.$button.text('Start quiz');
 
 	var self = this;
@@ -120,6 +121,8 @@ Quiz.prototype.start = function() {
 		self.$questionPanel.addClass('panel').show();
 		self.$answersPanel.addClass('panel options').show();
 		self.$scorePanel.show();
+
+		$('body').removeClass('start');
 
 		self.nextQuestion();
 	};
@@ -178,19 +181,21 @@ Quiz.prototype.checkAnswer = function() {
 	this.$answersPanel.show();
 
 	var question = this.questions[this.currentQuestionIndex];
-	question.selectAnswer(question.answers[0]);
+	question.selectedAnswer = question.answers[0];
 
 	// Update the score
 	var self = this;
 	this.$button.text('I was correct');
 	this.buttonAction = function() {
-		question.answers[0].reveal(true, false, true);
+		question.selectAnswer(question.selectedAnswer);
+		question.selectedAnswer.reveal(true, false, true);
 		self.updateScore(question.selectedAnswer.score);
 		self.finishAnswer();
 	};
 	this.$button2.text('I was wrong').parent().show();
 	this.button2Action = function() {
-		question.answers[0].reveal(true, false, false);
+		question.selectAnswer(question.selectedAnswer);
+		question.selectedAnswer.reveal(true, false, false);
 		self.finishAnswer();
 	};
 };
@@ -217,11 +222,12 @@ Quiz.prototype.finishQuiz = function() {
 	var resultText = 'Your final score is ' + this.currentScore;
 	if (this.currentScore < this.maxScore) {
 		resultText += ', out of a possible ' + this.maxScore;
-		resultText += ' - That\'s ' + parseInt(100 * this.currentScore / this.maxScore) + '%';
+		resultText += '\nThat\'s ' + parseInt(100 * this.currentScore / this.maxScore) + '%.';
 	} else {
-		resultText += ' - Congratulations, you got all of the questions right!';
+		resultText += '.\nCongratulations, you got all of the questions right!';
 	}
 	this.$questionPanel.text(resultText);
+	this.$questionPanel.html(this.$questionPanel.html().replace(/\n/g, '<div class="break"/>'));
 	this.$answersPanel.empty().hide();
 
 	this.$button.text('All done!');

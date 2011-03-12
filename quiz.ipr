@@ -385,7 +385,9 @@
   <component name="ProjectDictionaryState">
     <dictionary name="rich">
       <words>
+        <w>mousedown</w>
         <w>multi</w>
+        <w>touchstart</w>
         <w>webapp</w>
       </words>
     </dictionary>

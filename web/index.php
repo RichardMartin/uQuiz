@@ -6,7 +6,6 @@
 	<meta name="keywords" content="simple quiz webapp iPhone"/>
 
 	<meta name="apple-mobile-web-app-capable" content="yes"/>
-	<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
 	<meta name="viewport" content="width=device-width,user-scalable=false"/>
 
 	<title>Quiz :: <?=$quizTitle?></title>
@@ -19,7 +18,7 @@
 	<script type="text/javascript" src="/js/quizDB.<?=$quizName?>.js"></script>
 </head>
 <body>
-	<h1 class="panel">
+	<h1>
 		Quiz v<?=QUIZ_VERSION?>
 		<span id="score">Score: <span id="currentScore">0</span> / <span id="maxScore">0</span></span>
 	</h1>
