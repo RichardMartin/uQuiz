@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<?php require('php/setup.php'); ?>
+<?php require('./php/setup.php'); ?>
 <html lang="en" manifest="/quiz.<?=$quizName?>.manifest">
 <head>
 	<meta name="description" content="Simple quiz webapp for iPhone"/>

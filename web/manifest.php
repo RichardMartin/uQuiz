@@ -1,5 +1,5 @@
 <?php
-require('setup.php');
+require('./php/setup.php');
 
 header('Content-Type: text/cache-manifest');
 header('Last-Modified: '.gmdate('D, d M Y H:i:s', $quizTimestamp).' GMT');
