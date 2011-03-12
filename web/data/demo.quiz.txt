@@ -1,14 +1,15 @@
 PassHash: 6ba2765ec849cc9bef8b53dc4ad2478b
+NoRandomOrder
 
 Q: Which of these is the correct spelling?
-A*: Aeroplane
-A: Airplane // Speak english boy!
+A*2: Aeroplane
+A*: Airplane // Okay, if you're a dumb Yank
 A: Areplayn
 
 Q: How many wings does an aeroplane usually have?
 NoRandomOrder
 A: 1
-A*: 2
+A*: 2 // Of course, some specialised military jets have four wings
 A: 3
 A: 4 // We're talking normal planes here, not fancy military gear!
 
@@ -21,3 +22,5 @@ A*: False // The most recent statistics put the figure at 98.3%
 Q: Explain in detail how to land a plane.
 A: You point it in the direction of the runway, and press the 'auto-land' button
    // And don't forget to put the wheels down!
+   // Passengers don't like a bumpy landing.
+   Even RyanAir passengers.

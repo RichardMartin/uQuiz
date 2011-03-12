@@ -115,6 +115,7 @@ Quiz.prototype.nextQuestion = function() {
 	this.currentQuestionIndex = (this.currentQuestionIndex == null) ? 0 : this.currentQuestionIndex + 1;
 	var question = this.questions[this.currentQuestionIndex];
 	this.$questionPanel.text(question.text);
+	this.$questionPanel.html(this.$questionPanel.html().replace(/\n/g, '<div class="break"/>'));
 
 	var answers = question.getAnswers();
 	var self = this;
@@ -306,6 +307,7 @@ Answer.prototype.parseData = function(data) {
 Answer.prototype.init = function(question, $answerPanel) {
 	this.$answerPanel = $answerPanel;
 	this.$answerPanel.text(this.text);
+	this.$answerPanel.html(this.$answerPanel.html().replace(/\n/g, '<div class="break"/>'));
 
 	var self = this;
 	this.$answerPanel.click(function() {
@@ -334,6 +336,7 @@ Answer.prototype.reveal = function(isSelected, isMultiChoice, isCorrect) {
 		var $commentPanel = $('<div/>');
 		$commentPanel.addClass('comment');
 		$commentPanel.text(comment);
+		$commentPanel.html($commentPanel.html().replace(/\n/g, '<div class="break"/>'));
 
 		this.$answerPanel.empty();
 		this.$answerPanel.text(this.text);

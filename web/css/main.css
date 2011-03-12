@@ -69,6 +69,14 @@ h1 #score {
 	font-size: 90%;
 }
 
+
+.break {
+	margin-top: 4px;
+}
+.option .comment .break {
+	margin-top: 2px;
+}
+
 .button {
 	background: #257;
 	color: #eee;

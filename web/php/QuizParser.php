@@ -248,7 +248,9 @@ class QuizParser {
 
 	function buildJSON($quizName, $quizTimestamp = null, $showLogs = false, $showErrors = true) {
 		$quizTimestamp = is_numeric($quizTimestamp) ? $quizTimestamp : time();
-		$jsonData = array('name' => $quizName, 'timestamp' => $quizTimestamp, 'questions' => $this->quizData['questions']);
+		$jsonData = array('name' => $quizName, 'timestamp' => $quizTimestamp);
+		$jsonData['randomiseQuestions'] = $this->quizData['randomiseQuestions'];
+		$jsonData['questions'] = $this->quizData['questions'];
 
 		if ($showLogs || $showErrors) {
 			$logs = array();
