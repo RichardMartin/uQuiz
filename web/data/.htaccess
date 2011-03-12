@@ -1,0 +1,4 @@
+AuthType Basic
+AuthName "Quiz data files"
+AuthUserFile "/home/richtf/.htpasswds/public_html/quiz/data/passwd"
+require valid-user

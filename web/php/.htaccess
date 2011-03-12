@@ -1,0 +1,4 @@
+AuthType Basic
+AuthName "PHP core"
+AuthUserFile "/home/richtf/.htpasswds/public_html/quiz/php/passwd"
+require valid-user
