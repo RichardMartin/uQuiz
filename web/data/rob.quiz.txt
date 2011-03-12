@@ -1,74 +1,25 @@
-'questions': [
-	{
-		'text': 'Which of these is the correct spelling?',
-		'answers': [
-			{
-				'text': 'Aeroplane',
-				'score': 1,
-				'comment': ''
-			},
-			{
-				'text': 'Airplane',
-				'score': 0,
-				'comment': 'This is only correct if you\'re a dumb Yank'
-			},
-			{
-				'text': 'Areplayn',
-				'score': 0,
-				'comment': ''
-			}
-		]
-	},
-	{
-		'text': 'How many wings does an aeroplane usually have?',
-		'randomiseAnswers': false,
-		'answers': [
-			{
-				'text': '1',
-				'score': 0,
-				'comment': ''
-			},
-			{
-				'text': '2',
-				'score': 1,
-				'comment': 'Of course, some specialised military jets have four wings'
-			},
-			{
-				'text': '3',
-				'score': 0,
-				'comment': ''
-			},
-			{
-				'text': '4',
-				'score': 0,
-				'comment': 'We\'re talking normal planes here, not fancy military gear!'
-			}
-		]
-	},
-	{
-		'text': '90% of a pilot\'s job is pressing the autopilot button.  True or false?',
-		'randomiseAnswers': false,
-		'answers': [
-			{
-				'text': 'True',
-				'score': 0,
-				'comment': 'The most recent statistics put the figure at 98.3%'
-			},
-			{
-				'text': 'False',
-				'score': 1,
-				'comment': 'The most recent statistics put the figure at 98.3%'
-			}
-		]
-	},
-	{
-		'text': 'Explain in detail how to land a plane.',
-		'answers': [
-			{
-				'text': 'You point it in the direction of the runway, and press the \'auto-land\' button',
-				'score': 1,
-				'comment': 'And don\'t forget to put the wheels down!'
-			}
-		]
-	}
-]
+NoRandomOrder
+PassHash: qu1z
+
+Q: Which of these is the correct spelling?
+A[2]: Aeroplane
+A[1]: Airplane // Okay, if you're a dumb Yank
+A: Areplayn
+
+Q: How many wings does an aeroplane usually have?
+NoRandomOrder
+A: 1
+A*: 2 // Of course, some specialised military jets have four wings
+A: 3
+A: 4 // We're talking normal planes here, not fancy military gear!
+
+Q: 90% of a pilot's job is pressing the autopilot button.
+	True or false?
+NoRandomOrder
+A: True // The most recent statistics put the figure at 98.3%
+A*: False // The most recent statistics put the figure at 98.3%
+
+Q: Explain in detail how to land a plane.
+A: You point it in the direction of the runway, and press the 'auto-land' button
+	// And don't forget
+	// to put the wheels down!

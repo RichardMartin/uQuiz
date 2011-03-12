@@ -2,6 +2,6 @@ AddType text/cache-manifest manifest
 
 RewriteEngine on
 
-RewriteRule ^([a-zA-Z0-9][a-zA-Z0-9_-]*)$ index.php?quiz=$1
-RewriteRule ^quiz.([a-zA-Z0-9][a-zA-Z0-9_-]*).manifest$ manifest.php?quiz=$1
-RewriteRule ^js/quizDB.([a-zA-Z0-9][a-zA-Z0-9_-]*).js$ js/quizDB.php?quiz=$1
+RewriteRule ^([a-zA-Z0-9][a-zA-Z0-9_-]*)$ index.php?quiz=$1 [QSA]
+RewriteRule ^quiz.([a-zA-Z0-9][a-zA-Z0-9_-]*).manifest$ manifest.php?quiz=$1 [QSA]
+RewriteRule ^js/quizDB.([a-zA-Z0-9][a-zA-Z0-9_-]*).js$ js/quizDB.php?quiz=$1 [QSA]
