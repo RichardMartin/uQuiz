@@ -66,6 +66,7 @@ body.start h1 {
 
 .panel {
 	background: #fff;
+	background-clip: border;
 	color: #111;
 	border: 1px solid #999;
 	border-radius: 15px;
@@ -80,7 +81,7 @@ body.start h1 {
 }
 
 .option {
-	background-clip: padding;
+	background-clip: border;
 	border-bottom: 1px solid #999;
 	padding: 14px 10px;
 	cursor: pointer;
