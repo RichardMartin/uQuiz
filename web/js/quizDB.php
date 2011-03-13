@@ -1,6 +1,6 @@
 <?php
-require('../php/setup.php');
-require('../php/QuizParser.php');
+require_once('../php/setup.php');
+require_once('../php/QuizParser.php');
 
 header('Content-Type: application/javascript');
 header('Last-Modified: '.gmdate('D, d M Y H:i:s', $quizTimestamp).' GMT');
