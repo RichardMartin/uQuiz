@@ -25,7 +25,7 @@
 		<form id="quizPasswordForm" action="" method="POST">
 			<div id="quiz">
 				<label for="password"><?=$quizTitle?> quiz password</label>
-				<input type="text" id="password" name="password" value=""/>
+				<input type="password" id="password" name="password" value=""/>
 			</div>
 
 			<div class="buttonContainer">

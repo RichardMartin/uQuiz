@@ -13,9 +13,9 @@ if (is_readable($quizDataFilePath)) {
 		$password = $_REQUEST['password'];
 		if ($quizParser->checkPassword($password)) {
 			$cookiePassHash = $quizParser->createPassHash($quizParser->createPassHash($password));
-			setCookie('password', $cookiePassHash, null, '/', $_SERVER['HTTP_HOST'], false, true);
+			setCookie('passwordCookie', $cookiePassHash, null, '/', $_SERVER['HTTP_HOST'], false, true);
 		} else {
-			$cookiePassword = $_COOKIE['password'];
+			$cookiePassword = $_COOKIE['passwordCookie'];
 			if (!$quizParser->checkCookiePassword($cookiePassword)) {
 				require($root.'/password.php');
 				exit();
@@ -33,7 +33,12 @@ if (is_readable($quizDataFilePath)) {
 		$quizData = preg_replace('/^\\s*PassHash:.*/mi', '', $quizData);
 
 		// TODO: Password confirmation
-		$newPassHash = strLen($newPassword) ? $quizParser->createPassHash($newPassword) : $quizParser->passHash;
+		$newPassHash = $quizParser->passHash;
+		if (strLen($newPassword)) {
+			$newPassHash = $quizParser->createPassHash($newPassword);
+			$newCookiePassHash = $quizParser->createPassHash($newPassHash);
+			setCookie('passwordCookie', $newCookiePassHash, null, '/', $_SERVER['HTTP_HOST'], false, true);
+		}
 		$quizData = 'PassHash: '.$newPassHash."\n".$quizData;
 
 		$quizParser->parseText($quizData);

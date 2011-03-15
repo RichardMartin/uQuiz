@@ -26,6 +26,9 @@
 			<div id="quiz">
 				<label for="quizData"><?=$quizTitle?> quiz content</label>
 				<textarea id="quizData" name="quizData" class="quizData"><?=htmlEntities($quizData)?></textarea>
+
+				<label for="quizPassword">Update quiz password</label>
+				<input type="password" id="quizPassword" name="quizPassword" value=""/>
 			</div>
 
 			<div class="buttonContainer">
