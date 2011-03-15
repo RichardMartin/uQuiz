@@ -22,14 +22,14 @@
 			Quiz v<?=QUIZ_VERSION?> :: Edit quiz
 		</h1>
 
-		<form id="quizEditForm" action="" method="POST">
+		<form id="quizPasswordForm" action="" method="POST">
 			<div id="quiz">
-				<label for="quizData"><?=$quizTitle?> quiz content</label>
-				<textarea id="quizData" name="quizData" class="quizData"><?=htmlEntities($quizData)?></textarea>
+				<label for="password"><?=$quizTitle?> quiz password</label>
+				<input type="text" id="password" name="password" value=""/>
 			</div>
 
 			<div class="buttonContainer">
-				<div class="button submit">Save quiz</div>
+				<div class="button submit">Edit quiz</div>
 			</div>
 		</form>
 	</div>

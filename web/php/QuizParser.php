@@ -34,6 +34,15 @@ class QuizParser {
 		}
 	}
 
+	function parseText($quizText) {
+		$quizLines = explode("\n", $quizText);
+		$this->parseStart();
+		foreach ($quizLines as $quizLine) {
+			$this->parseLine($quizLine);
+		}
+		$this->parseEnd();
+	}
+
 	function parseStart() {
 		$quizData['questions'] = array();
 	}
@@ -97,6 +106,14 @@ class QuizParser {
 
 	function checkPassword($password) {
 		return ($this->passHash == $this->createPassHash($password));
+	}
+
+	function checkCookiePassword($password) {
+		return ($this->createPassHash($this->passHash) == $password);
+	}
+
+	function isPasswordProtected() {
+		return ($this->passHash != null);
 	}
 
 	function addQuestion() {
