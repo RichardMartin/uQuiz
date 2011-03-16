@@ -4,6 +4,7 @@ if ($_REQUEST['phpInfo'] == 'TRUE') {
 }
 
 define('QUIZ_VERSION', '1.1');
+define('FAQ_QUIZ_NAME', 'faq');
 
 $root = $_SERVER['DOCUMENT_ROOT'];
 
@@ -14,6 +15,7 @@ $quizName = strToLower($quizTitle);
 $editMode = preg_match('/\/edit.php$/', $_SERVER['SCRIPT_FILENAME']);
 
 $quizDataFilePath = $root.'/data/'.$quizName.'.quiz.txt';
+$faqDataFilePath = $root.'/data/'.FAQ_QUIZ_NAME.'.quiz.txt';
 $cssFilePath = $root.'/css/main.css';
 $jsFilePath = $root.'/js/quiz.js';
 
