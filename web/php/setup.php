@@ -3,7 +3,7 @@ if ($_REQUEST['phpInfo'] == 'TRUE') {
 	phpInfo();
 }
 
-define('QUIZ_VERSION', '1.1');
+define('QUIZ_VERSION', '1.2');
 define('FAQ_QUIZ_NAME', 'faq');
 
 $root = $_SERVER['DOCUMENT_ROOT'];

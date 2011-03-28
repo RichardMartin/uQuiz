@@ -10,6 +10,7 @@ class QuizParser {
 	var $debug = false;
 
 	var $quizData = array();
+	var $answerKey = array();
 
 	var $logs = array();
 	var $warnings = array();
@@ -20,7 +21,9 @@ class QuizParser {
 	var $currentLine = 0;
 	var $currentState = STATE_QUIZ;
 	var $currentQuestion = null;
+	var $currentQuestionNumber = 0;
 	var $currentAnswer = null;
+	var $currentAnswerNumber = 0;
 
 	function parse($quizFileName) {
 		$quizFile = fOpen($quizFileName, 'r');
@@ -44,7 +47,8 @@ class QuizParser {
 	}
 
 	function parseStart() {
-		$quizData['questions'] = array();
+		$this->quizData['questions'] = array();
+		$this->currentQuestionNumber = 0;
 	}
 
 	function parseEnd() {
@@ -66,6 +70,8 @@ class QuizParser {
 			$this->setRandomOrder(false);
 		} else if (preg_match('/^PassHash:\\s*(.*)/i', $quizLine, $matches)) {
 			$this->setPassHash($matches[1]);
+		} else if (preg_match('/^AnswerKey:\\s*(.*)/i', $quizLine, $matches)) {
+			$this->setAnswerKey($matches[1]);
 		} else if (preg_match('/^Q\\s*:(.*)/i', $quizLine, $matches)) {
 			$this->addQuestion();
 			$this->addContent($matches[1]);
@@ -92,6 +98,25 @@ class QuizParser {
 				$this->quizData['randomiseQuestions'] = $value;
 			}
 			$this->warn($message);
+		}
+	}
+
+	function setAnswerKey($answerKey) {
+		if ($this->currentState == STATE_QUIZ) {
+			$matches = array();
+			if (preg_match_all('/[^a-z]*([a-z]+)/i', $answerKey, $matches)) {
+				foreach ($matches[1] as $answerNumber) {
+					if (is_numeric($answerNumber)) {
+						$this->answerKey[] = (int) $answerNumber;
+					} else {
+						$this->answerKey[] = ord(strToLower($answerNumber)) - ord('a');
+					}
+				}
+			}
+		} else if ($this->currentState == STATE_QUESTION) {
+			$this->error('An answer-key is a property of quizzes, not individual questions (at the moment).');
+		} else if ($this->currentState == STATE_QUESTION) {
+			$this->error('An answer-key is a property of quizzes, not individual answers.');
 		}
 	}
 
@@ -126,6 +151,8 @@ class QuizParser {
 		// Start a new question
 		$this->currentState = STATE_QUESTION;
 		$this->currentQuestion = array('text' => '', 'answers' => array());
+		$this->currentQuestionNumber++;
+		$this->currentAnswerNumber = 0;
 	}
 
 	function addCurrentQuestion() {
@@ -137,6 +164,15 @@ class QuizParser {
 				$this->error('Question did not have any answers, and will not be included in the quiz.');
 			} else {
 				$answerCount = count($this->currentQuestion['answers']);
+
+				// See if there is a correct answer marked in the answer key
+				$correctAnswerFromKey = $this->answerKey[$this->currentQuestionNumber - 1];
+				if (is_numeric($correctAnswerFromKey)) {
+					$correctAnswer = &$this->currentQuestion['answers'][$correctAnswerFromKey];
+					if (is_array($correctAnswer)){// && !$correctAnswer['score']) {
+						$correctAnswer['score'] = 1;
+					}
+				}
 
 				// Check that there is at least one correct answer
 				$hasCorrectAnswer = false;
@@ -186,6 +222,7 @@ class QuizParser {
 		// Start a new answer
 		$this->currentState = STATE_ANSWER;
 		$this->currentAnswer = array('text' => '', 'score' => $answerScore);
+		$this->currentAnswerNumber++;
 	}
 
 	function addCurrentAnswer() {
