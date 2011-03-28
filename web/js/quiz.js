@@ -360,6 +360,7 @@ Answer.prototype.reveal = function(isSelected, isMultiChoice, isCorrect) {
 
 		this.$answerPanel.empty();
 		this.$answerPanel.text(this.text);
+		this.$answerPanel.html(this.$answerPanel.html().replace(/\n/g, '<div class="break"/>'));
 		this.$answerPanel.append($commentPanel);
 	} else if (this.score > 0) {
 		this.$answerPanel.addClass('correct');
