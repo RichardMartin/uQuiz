@@ -17,7 +17,9 @@ function Quiz(data) {
 	this.$button2 = null;
 	this.$scorePanel = null;
 	this.$currentScore = null;
-	this.$maxScore = null;
+	this.$questionNumPanel = null;
+	this.$currentQuestionNum = null;
+	this.$totalQuestions = null;
 
 	this.buttonAction = null;
 	this.button2Action = null;
@@ -43,19 +45,34 @@ Quiz.prototype.getMaxScore = function() {
 	return maxScore;
 };
 
-Quiz.prototype.updateScore = function(scoreChange) {
-	this.currentScore += (scoreChange) ? scoreChange : 0;
-	this.$currentScore.text(this.currentScore);
-	this.$maxScore.text(this.maxScore);
+Quiz.prototype.getCurrentMaxScore = function() {
+	var maxScore = 0;
+	for (var index = 0; index <= this.currentQuestionIndex; index++) {
+		var question = this.questions[index];
+		maxScore += question.getMaxScore();
+	}
+	return maxScore;
 };
 
-Quiz.prototype.init = function($questionPanel, $answersPanel, $button, $button2, $scorePanel, $currentScore, $maxScore) {
+Quiz.prototype.updateScore = function(scoreChange) {
+	this.currentScore += (scoreChange) ? scoreChange : 0;
+
+	var currentMaxScore = Math.max(this.getCurrentMaxScore(), 1);
+	var currentScorePercent = parseInt(100 * this.currentScore / currentMaxScore);
+	this.$currentScore.text(currentScorePercent);
+};
+
+Quiz.prototype.init = function($questionPanel, $answersPanel, $button, $button2,
+                               $scorePanel, $currentScore,
+                               $questionNumPanel, $currentQuestionNum, $totalQuestions) {
 	// Set up the interface
 	this.$questionPanel = $questionPanel;
 	this.$answersPanel = $answersPanel;
 	this.$scorePanel = $scorePanel;
 	this.$currentScore = $currentScore;
-	this.$maxScore = $maxScore;
+	this.$questionNumPanel = $questionNumPanel;
+	this.$currentQuestionNum = $currentQuestionNum;
+	this.$totalQuestions = $totalQuestions;
 
 	this.$button = $('<div/>');
 	this.$button.addClass('button');
@@ -99,7 +116,10 @@ Quiz.prototype.start = function() {
 	this.currentScore = 0;
 	this.maxScore = this.getMaxScore();
 	this.$scorePanel.hide();
+	this.$questionNumPanel.hide();
+
 	this.updateScore();
+	this.$totalQuestions.text(this.questions.length);
 
 	// Randomise the quiz
 	if (this.randomiseQuestions) {
@@ -121,6 +141,7 @@ Quiz.prototype.start = function() {
 		self.$questionPanel.addClass('panel').show();
 		self.$answersPanel.addClass('panel options').show();
 		self.$scorePanel.show();
+		self.$questionNumPanel.show();
 
 		$('body').removeClass('start');
 
@@ -131,6 +152,7 @@ Quiz.prototype.start = function() {
 Quiz.prototype.nextQuestion = function() {
 	this.currentQuestionIndex = (this.currentQuestionIndex == null) ? 0 : this.currentQuestionIndex + 1;
 	var question = this.questions[this.currentQuestionIndex];
+	this.$currentQuestionNum.text(this.currentQuestionIndex + 1);
 	this.$questionPanel.text(question.text);
 	this.$questionPanel.html(this.$questionPanel.html().replace(/\n/g, '<div class="break"/>'));
 
@@ -372,7 +394,7 @@ Answer.prototype.reveal = function(isSelected, isMultiChoice, isCorrect) {
  */
 $(function() {
 	window.quiz = new Quiz(window.quizData);
-	quiz.init($('#question'), $('#answers'), $('#button'), $('#button2'), $('#score'), $('#currentScore'), $('#maxScore'));
+	quiz.init($('#question'), $('#answers'), $('#button'), $('#button2'), $('#score'), $('#currentScore'), $('#questionNum'), $('#currentQuestion'), $('#totalQuestions'));
 	quiz.start();
 });
 

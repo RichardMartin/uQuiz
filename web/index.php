@@ -8,7 +8,7 @@
 	<meta name="apple-mobile-web-app-capable" content="yes"/>
 	<meta name="viewport" content="width=device-width,user-scalable=false"/>
 
-	<title>Quiz :: <?=$quizTitle?></title>
+	<title>Quiz v<?=QUIZ_VERSION?> :: <?=$quizTitle?></title>
 
 	<link rel="apple-touch-icon" href="/img/iphone.icon.png"/>
 	<link rel="stylesheet" type="text/css" href="/css/main.css"/>
@@ -20,8 +20,8 @@
 <body>
 	<div class="container">
 		<h1>
-			Quiz v<?=QUIZ_VERSION?>
-			<span id="score">Score: <span id="currentScore">0</span> / <span id="maxScore">0</span></span>
+			<span id="questionNum">Q: <span id="currentQuestion">0</span> / <span id="totalQuestions">0</span></span>
+			<span id="score">Score: <span id="currentScore">0</span>%</span>
 		</h1>
 
 		<div id="question"></div>
