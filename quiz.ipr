@@ -387,6 +387,7 @@
       <words>
         <w>mousedown</w>
         <w>multi</w>
+        <w>preg</w>
         <w>touchstart</w>
         <w>webapp</w>
       </words>

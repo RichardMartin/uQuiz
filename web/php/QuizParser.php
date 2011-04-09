@@ -9,6 +9,8 @@ define('STATE_ANSWER', 3);
 class QuizParser {
 	var $debug = false;
 
+	var $quizTitle = null;
+
 	var $quizData = array();
 	var $answerKey = array();
 
@@ -68,6 +70,8 @@ class QuizParser {
 
 		if (preg_match('/^NoRandomOrder$/i', $quizLine)) {
 			$this->setRandomOrder(false);
+		} else if (preg_match('/^Title:\\s*(.*)/i', $quizLine, $matches)) {
+			$this->setTitle($matches[1]);
 		} else if (preg_match('/^PassHash:\\s*(.*)/i', $quizLine, $matches)) {
 			$this->setPassHash($matches[1]);
 		} else if (preg_match('/^AnswerKey:\\s*(.*)/i', $quizLine, $matches)) {
@@ -118,6 +122,10 @@ class QuizParser {
 		} else if ($this->currentState == STATE_QUESTION) {
 			$this->error('An answer-key is a property of quizzes, not individual answers.');
 		}
+	}
+
+	function setTitle($title) {
+		$this->quizTitle = trim($title);
 	}
 
 	function setPassHash($passHash) {
@@ -302,7 +310,7 @@ class QuizParser {
 
 	function buildJSON($quizName, $quizTimestamp = null, $showLogs = false, $showErrors = true) {
 		$quizTimestamp = is_numeric($quizTimestamp) ? $quizTimestamp : time();
-		$jsonData = array('name' => $quizName, 'timestamp' => $quizTimestamp);
+		$jsonData = array('name' => $quizName, 'title' => $this->quizTitle, 'timestamp' => $quizTimestamp);
 		$jsonData['randomiseQuestions'] = $this->quizData['randomiseQuestions'];
 		$jsonData['questions'] = $this->quizData['questions'];
 

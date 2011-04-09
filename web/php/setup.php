@@ -3,13 +3,13 @@ if ($_REQUEST['phpInfo'] == 'TRUE') {
 	phpInfo();
 }
 
-define('QUIZ_VERSION', '1.3');
+define('QUIZ_VERSION', '1.4');
 define('FAQ_QUIZ_NAME', 'faq');
 
 $root = $_SERVER['DOCUMENT_ROOT'];
 
 $quizTitle = preg_replace('/[^a-zA-Z0-9_-]/', '', $_REQUEST['quiz']);
-$quizTitle = ($quizTitle) ? $quizTitle : 'Rob';
+$quizTitle = ($quizTitle) ? $quizTitle : 'FAQ';
 $quizName = strToLower($quizTitle);
 
 $editMode = preg_match('/\/edit.php$/', $_SERVER['SCRIPT_FILENAME']);

@@ -1,11 +1,44 @@
 /**
+ * Random number generator that allows the seed to be specified.
+ * @param seed The random seed, or null to use an undetermined seed.
+ */
+function Random(seed) {
+	var d = new Date();
+	this.seed = (seed != null) ? seed : 2345678901 + (d.getSeconds() * 0xFFFFFF) + (d.getMinutes() * 0xFFFF);
+	this.A = 48271;
+	this.M = 2147483647;
+	this.Q = this.M / this.A;
+	this.R = this.M % this.A;
+	this.oneOverM = 1.0 / this.M;
+}
+
+Random.prototype.next = function() {
+	var hi = this.seed / this.Q;
+	var lo = this.seed % this.Q;
+	var test = this.A * lo - this.R * hi;
+	if (test > 0) {
+		this.seed = test;
+	} else {
+		this.seed = test + this.M;
+	}
+	return (this.seed * this.oneOverM);
+};
+
+Random.prototype.nextInt = function(min, max) {
+	return Math.round(((max - min) * this.next()) + min);
+};
+
+/**
  * Represents a quiz.
  * @param data The quiz data.
  */
 function Quiz(data) {
 	this.data = data;
+	this.name = null;
+	this.title = null;
 	this.timestamp = new Date();
 	this.questions = [];
+	this.randomSeed = null;
 
 	this.currentQuestionIndex = null;
 	this.currentScore = 0;
@@ -15,17 +48,20 @@ function Quiz(data) {
 	this.$answersPanel = null;
 	this.$button = null;
 	this.$button2 = null;
-	this.$scorePanel = null;
+	this.$quizTitle = null;
+	this.$quizDetailPanel = null;
 	this.$currentScore = null;
-	this.$questionNumPanel = null;
 	this.$currentQuestionNum = null;
 	this.$totalQuestions = null;
 
 	this.buttonAction = null;
 	this.button2Action = null;
 }
+Quiz.RANDOM = new Random(null);
 
 Quiz.prototype.parseData = function(data) {
+	this.name = data.name;
+	this.title = data.title;
 	this.timestamp = new Date(parseInt(data.timestamp));
 	this.questions = [];
 
@@ -33,6 +69,45 @@ Quiz.prototype.parseData = function(data) {
 	for (var index in data.questions) {
 		var answer = new Question(data.questions[index]);
 		this.questions.push(answer);
+	}
+};
+
+Quiz.prototype.clearSavedPosition = function() {
+	if ('localStorage' in window && window.localStorage !== null) {
+		window.localStorage.clear()
+	}
+};
+
+Quiz.prototype.savePosition = function() {
+	if (this.currentQuestionIndex > 0) {
+		if ('localStorage' in window && window.localStorage !== null) {
+			var dataStem = 'quiz.' + this.name + '.';
+			window.localStorage[dataStem + 'saved'] = 'true';
+			window.localStorage[dataStem + 'currentQuestionIndex'] = this.currentQuestionIndex;
+			window.localStorage[dataStem + 'randomSeed'] = this.randomSeed;
+			window.localStorage[dataStem + 'currentScore'] = this.currentScore;
+		}
+	}
+};
+
+Quiz.prototype.loadPosition = function() {
+	if ('localStorage' in window && window.localStorage !== null) {
+		var dataStem = 'quiz.' + this.name + '.';
+		if (window.localStorage[dataStem + 'saved'] == 'true') {
+			this.currentQuestionIndex = parseInt(window.localStorage[dataStem + 'currentQuestionIndex']);
+			this.randomSeed = parseFloat(window.localStorage[dataStem + 'randomSeed']);
+			Quiz.RANDOM = new Random(this.randomSeed);
+			this.currentScore = parseFloat(window.localStorage[dataStem + 'currentScore']);
+		}
+	}
+};
+
+Quiz.prototype.hasSavedPosition = function() {
+	if ('localStorage' in window && window.localStorage !== null) {
+		var dataStem = 'quiz.' + this.name + '.';
+		return (window.localStorage[dataStem + 'saved'] == 'true');
+	} else {
+		return false;
 	}
 };
 
@@ -62,15 +137,13 @@ Quiz.prototype.updateScore = function(scoreChange) {
 	this.$currentScore.text(currentScorePercent);
 };
 
-Quiz.prototype.init = function($questionPanel, $answersPanel, $button, $button2,
-                               $scorePanel, $currentScore,
-                               $questionNumPanel, $currentQuestionNum, $totalQuestions) {
+Quiz.prototype.init = function($questionPanel, $answersPanel, $button, $button2, $quizTitle,
+                               $quizDetailPanel, $currentScore, $currentQuestionNum, $totalQuestions) {
 	// Set up the interface
 	this.$questionPanel = $questionPanel;
 	this.$answersPanel = $answersPanel;
-	this.$scorePanel = $scorePanel;
+	this.$quizDetailPanel = $quizDetailPanel;
 	this.$currentScore = $currentScore;
-	this.$questionNumPanel = $questionNumPanel;
 	this.$currentQuestionNum = $currentQuestionNum;
 	this.$totalQuestions = $totalQuestions;
 
@@ -83,6 +156,8 @@ Quiz.prototype.init = function($questionPanel, $answersPanel, $button, $button2,
 	this.$button2.addClass('button');
 	$button2.addClass('buttonContainer').hide();
 	$button2.append(this.$button2);
+
+	this.$quizTitle = $quizTitle;
 
 	var self = this;
 	this.$button.click(function() {
@@ -107,46 +182,74 @@ Quiz.prototype.init = function($questionPanel, $answersPanel, $button, $button2,
 };
 
 Quiz.prototype.start = function() {
-	this.parseData(this.data);
-
 	this.$questionPanel.empty().hide();
 	this.$answersPanel.empty().hide();
+
+	this.setUpQuestions();
+	if (this.title != null) {
+		this.$quizTitle.text(this.title);
+	}
 
 	this.currentQuestionIndex = null;
 	this.currentScore = 0;
 	this.maxScore = this.getMaxScore();
-	this.$scorePanel.hide();
-	this.$questionNumPanel.hide();
+	this.$quizDetailPanel.hide();
 
 	this.updateScore();
 	this.$totalQuestions.text(this.questions.length);
-
-	// Randomise the quiz
-	if (this.randomiseQuestions) {
-		var randomisedQuestions = [];
-		while (this.questions.length > 0) {
-			var questionIndex = Math.floor(Math.random() * this.questions.length);
-			randomisedQuestions.push(this.questions[questionIndex]);
-			this.questions.splice(questionIndex, 1);
-		}
-		this.questions = randomisedQuestions;
-	}
 
 	// Start the quiz
 	$('body').addClass('start');
 	this.$button.text('Start quiz');
 
+	if (this.hasSavedPosition()) {
+		var dataStem = 'quiz.' + this.name + '.';
+		var savedQuestionNumber = parseInt(window.localStorage[dataStem + 'currentQuestionIndex']) + 1;
+		this.$button2.text('Resume quiz (Q' + savedQuestionNumber + ')').parent().show();
+	}
+
 	var self = this;
-	this.buttonAction = function() {
+	var startQuiz = function() {
 		self.$questionPanel.addClass('panel').show();
 		self.$answersPanel.addClass('panel options').show();
-		self.$scorePanel.show();
-		self.$questionNumPanel.show();
+		self.$quizDetailPanel.show();
+		self.$button2.parent().hide();
 
 		$('body').removeClass('start');
 
 		self.nextQuestion();
 	};
+	this.buttonAction = function() {
+		self.clearSavedPosition();
+
+		startQuiz();
+	};
+
+	this.button2Action = function() {
+		// Load the saved quiz data and start the quiz
+		self.loadPosition();
+		self.setUpQuestions();
+
+		self.currentQuestionIndex--;
+		self.updateScore(0);
+
+		startQuiz();
+	};
+};
+
+Quiz.prototype.setUpQuestions = function() {
+	this.parseData(this.data);
+
+	this.randomSeed = Quiz.RANDOM.seed;
+	if (this.randomiseQuestions) {
+		var randomisedQuestions = [];
+		while (this.questions.length > 0) {
+			var questionIndex = Quiz.RANDOM.nextInt(0, this.questions.length - 1);
+			randomisedQuestions.push(this.questions[questionIndex]);
+			this.questions.splice(questionIndex, 1);
+		}
+		this.questions = randomisedQuestions;
+	}
 };
 
 Quiz.prototype.nextQuestion = function() {
@@ -182,6 +285,8 @@ Quiz.prototype.nextQuestion = function() {
 
 		answer.init(question, $answerPanel);
 	}
+
+	this.savePosition();
 };
 
 Quiz.prototype.acceptAnswer = function() {
@@ -288,7 +393,7 @@ Question.prototype.getAnswers = function() {
 	if (this.randomiseAnswers) {
 		var randomisedAnswers = [];
 		while (this.answers.length > 0) {
-			var answerIndex = Math.floor(Math.random() * this.answers.length);
+			var answerIndex = Quiz.RANDOM.nextInt(0, this.answers.length - 1);
 			randomisedAnswers.push(this.answers[answerIndex]);
 			this.answers.splice(answerIndex, 1);
 		}
@@ -394,7 +499,7 @@ Answer.prototype.reveal = function(isSelected, isMultiChoice, isCorrect) {
  */
 $(function() {
 	window.quiz = new Quiz(window.quizData);
-	quiz.init($('#question'), $('#answers'), $('#button'), $('#button2'), $('#score'), $('#currentScore'), $('#questionNum'), $('#currentQuestion'), $('#totalQuestions'));
+	quiz.init($('#question'), $('#answers'), $('#button'), $('#button2'), $('#quizTitle'), $('#quizDetail'), $('#currentScore'), $('#currentQuestion'), $('#totalQuestions'));
 	quiz.start();
 });
 

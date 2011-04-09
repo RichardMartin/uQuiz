@@ -20,8 +20,12 @@
 <body>
 	<div class="container">
 		<h1>
-			<span id="questionNum">Q: <span id="currentQuestion">0</span> / <span id="totalQuestions">0</span></span>
-			<span id="score">Score: <span id="currentScore">0</span>%</span>
+			<span id="quizTitle"><?=preg_replace('/[_-]+/', ' ', $quizTitle)?></span>
+			<div id="quizDetail">
+				<span id="questionNum">Q<span id="currentQuestion">0</span> / <span id="totalQuestions">0</span></span>
+				&nbsp;
+				<span id="score"><span id="currentScore">0</span>%</span>
+			</div>
 		</h1>
 
 		<div id="question"></div>
@@ -30,6 +34,6 @@
 		<div id="button"></div>
 		<div id="button2"></div>
 	</div>
-	<div class="footer">Quiz updated on <?=date('Y-m-d H:i:s', $quizTimestamp)?></div>
+	<div class="footer">Quiz v<?=QUIZ_VERSION?> updated on <?=date('Y-m-d H:i:s', $quizTimestamp)?></div>
 </body>
 </html>
